@@ -1,0 +1,64 @@
+MO
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+Leer
+Leer
+Leer
+Leer
+SCT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
+
+DI
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
+Leer
+Leer
+Leer
+Leer
+
+MI
+Leer
+Leer
+Leer
+Leer
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
+
+DO
+AT, EAV, SCN
+AT, EAV, SCN
+Leer
+Leer
+Leer
+Leer
+AT, EAV, SCN
+AT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
+
+FR
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+AT, EAV, SCN
+Leer
+Leer
+Leer
+Leer
+SCT, EAV, SCN
+SCT, EAV, SCN
+SCT, EAV, SCN
