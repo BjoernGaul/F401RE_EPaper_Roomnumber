@@ -1,29 +1,3 @@
-/**
- *  @filename   :   epd4in2_V2-demo.ino
- *  @brief      :   4.2inch e-paper V2 display demo
- *  @author     :   Yehui from Waveshare
- *
- *  Copyright (C) Waveshare     August 4 2017
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documnetation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to  whom the Software is
- * furished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 #include <Arduino.h>
 #include <SPI.h>
 #include "epd4in2_V2.h"
@@ -31,11 +5,27 @@
 #include "epdpaint.h"
 //  #include "paint_templates.h"
 #include "screen_week.h"
+#include "screen_day.h"
 #include "SD.h"
 #include "sd_reader.h"
 
 #define COLORED     0
 #define UNCOLORED   1
+
+#define sdcsPin PD_8
+
+// Define the enum
+enum weekDay {
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY,
+  SUNDAY
+};
+
+
 
 void setup() {
     // put your setup code here, to run once:
@@ -43,7 +33,16 @@ void setup() {
     Epd epd;
     Serial.println("Starting");
 
-    initSD();
+    delay(100);
+
+    if(!SD.begin(sdcsPin))
+    {
+        Serial.println("SD-init failed");
+        return;
+    }
+
+    delay(100);
+
 
     if (epd.Init() != 0) {
         Serial.print("e-Paper init failed");
@@ -58,7 +57,8 @@ void setup() {
     Paint paint(image, 8*50, 1);    //width should be the multiple of 8 
     paint.SetRotate(3);
 
-    paintHourplan(paint, epd);
+    //paintHourplan(paint, epd);
+    paintHourplanDay(paint, epd, MONDAY);
 
     epd.TurnOnDisplay_Partial();
 

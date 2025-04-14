@@ -5,6 +5,7 @@
 #include "epd4in2_V2.h"
 #include "epdpaint.h"
 
+
 #define COLORED     0
 #define UNCOLORED   1
 
