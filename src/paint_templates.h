@@ -18,12 +18,14 @@ void paintTimes(Paint paint, Epd epd)
 
     paint.SetHeight(40);
     paint.SetWidth(8*50);
-    paintHorizontalShort(paint, epd);
+    paint.Clear(UNCOLORED);
 
     //Time
     paint.DrawStringAt(0, 0, "11:30", &Font12, COLORED);
     //Date
     paint.DrawStringAt(0, 15, "10.04.25", &Font8, COLORED);
+
+    paint.DrawHorizontalLine(0, 32, 40, COLORED);
 
     //Hours
     char schoolHourPaint[3] = "1.";
@@ -36,7 +38,12 @@ void paintTimes(Paint paint, Epd epd)
         {
             yOffPaint = 5;
         }
-        paint.DrawStringAt(yOffPaint, (i-1)*34+35, schoolHourPaint, &Font16, COLORED);
+        paint.DrawStringAt(yOffPaint, (i-1)*32+42, schoolHourPaint, &Font16, COLORED);
+        paint.DrawHorizontalLine(0, (i-1)*32+64-1, 40, COLORED);
+        if(i != 11)
+        {
+            paint.DrawHorizontalLine(0, (i-1)*32+64, 40, COLORED);
+        }
     }
 
     epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 300-paint.GetHeight(), 0+paint.GetWidth(), 300);

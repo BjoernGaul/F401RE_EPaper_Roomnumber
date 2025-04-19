@@ -7,8 +7,20 @@
 File planSchoolhours;
 String file = "stunde.txt";
 char dataSchoolhoursbuffer[10000];
+extern int sdcsPin = PD_8; // Pin for SD card CS (Chip Select)
 
-
+bool initSDCard(int retries = 3) {
+    for (int attempt = 0; attempt < retries; attempt++) {
+        if (SD.begin(sdcsPin)) {
+            Serial.println("SD card initialized successfully");
+            return true;
+        }
+        Serial.println("SD card initialization failed. Retrying...");
+        delay(500); // Wait before retrying
+    }
+    Serial.println("SD card initialization failed after retries");
+    return false;
+}
 
 void readAllSDData() {
     int bufferIndex = 0; // Index to track the position in the buffer
@@ -49,6 +61,18 @@ void readAllSDData() {
 
     // Null-terminate the buffer
     dataSchoolhoursbuffer[bufferIndex] = '\0';
+
+    // Remove spaces from the buffer
+    int writeIndex = 0;
+    for (int readIndex = 0; readIndex < bufferIndex; readIndex++) {
+        if (dataSchoolhoursbuffer[readIndex] != ' '&& 
+            dataSchoolhoursbuffer[readIndex] != '\n' &&
+            dataSchoolhoursbuffer[readIndex] != '\r') {
+            dataSchoolhoursbuffer[writeIndex] = dataSchoolhoursbuffer[readIndex];
+            writeIndex++;
+        }
+    }
+    dataSchoolhoursbuffer[writeIndex] = '\0'; // Null-terminate after removing spaces
 
     planSchoolhours.close(); // Close the file
     Serial.println("Data read from SD card");

@@ -16,24 +16,29 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
     int partsInd = 1;
     char compareDay[3] = "MO";
 
-    if(indWeekday = 1){; //get the right Day to compare for search in data
-    }else if(indWeekday = 2){compareDay[0] = 'D'; compareDay[1] = 'I'; compareDay[2] = '\0' ;//DI
-    }else if(indWeekday = 3){compareDay[0] = 'M'; compareDay[1] = 'I'; compareDay[2] = '\0' ;//MI
-    }else if(indWeekday = 4){compareDay[0] = 'D'; compareDay[1] = 'O'; compareDay[2] = '\0' ;//DO
-    }else if(indWeekday = 5){compareDay[0] = 'F'; compareDay[1] = 'R'; compareDay[2] = '\0' ;//FR
+    if      (indWeekday == 1){compareDay[0] = 'M'; compareDay[1] = 'O'; //get the right Day to compare for search in data
+    }else if(indWeekday == 2){compareDay[0] = 'D'; compareDay[1] = 'I';//DI
+    }else if(indWeekday == 3){compareDay[0] = 'M'; compareDay[1] = 'I';//MI
+    }else if(indWeekday == 4){compareDay[0] = 'D'; compareDay[1] = 'O';//DO
+    }else if(indWeekday == 5){compareDay[0] = 'F'; compareDay[1] = 'R';//FR
     }
     
-    Serial.println("compareDay set");
 
     //look for index of day in data
     int indexDay = -1;
-    for(int i = 0; i < sizeof(data); i++)
+    for(int i = 0; i < strlen(data); i++)
     {
         if(data[i] == compareDay[0] && data[i+1] == compareDay[1] && data[i+2] == '|')
         {
             indexDay = i+3; //to get to the first character of the first hour
+            Serial.println("indexDay set");
+            Serial.println(indexDay);
             break;
         }
+    }
+    if(indexDay == -1)
+    {
+        Serial.println("indexDay not found");
     }
 
 
@@ -83,8 +88,9 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
         char entry[entryLength + 1];
         strncpy(entry, &data[indexHour], entryLength);
         entry[entryLength] = '\0';
+        Serial.println(entry); // Print the entry to the Serial Monitor
 
-        if (strcmp(entry, "Leer") == 0) {
+        if (strcmp(entry, "Leer\0") == 0) {
             Serial.println("Leer\0");
             indexHour += entryLength + 1; // Skip this entry and move to the next
             continue;
@@ -97,15 +103,15 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
 
         if (subject && schoolclass && teacher) {
             // Paint the hour, subject, and room
-            paint.DrawStringAt(10, 5, subject, &Font16, COLORED);
-            paint.DrawStringAt(50, 5, schoolclass, &Font16, COLORED);
-            paint.DrawStringAt(150, 5, teacher, &Font16, COLORED);
+            paint.DrawStringAt(10, 0, subject, &Font16, COLORED);
+            paint.DrawStringAt(50, 0, schoolclass, &Font16, COLORED);
+            paint.DrawStringAt(150, 0, teacher, &Font16, COLORED);
         }
 
         // Move to the next part in data
         indexHour += entryLength + 1; // +1 to skip the '|' separator
         Serial.println(i);
-        epd.Display_Partial_Not_refresh(paint.GetImage(), i*34, 58, i*34 + 16, 258);
+        epd.Display_Partial_Not_refresh(paint.GetImage(), (i-1)*32+32, 58, (i-1)*32+32 + 16, 258);
     }
 
     paintTimes(paint, epd);
