@@ -40,7 +40,11 @@ void setup() {
         Serial.println("SD-init failed");
         return;
     }
+    delay(100);
 
+    readAllSDData();
+
+    Serial.println("SD-init successfull");
     delay(100);
 
 
@@ -58,7 +62,7 @@ void setup() {
     paint.SetRotate(3);
 
     //paintHourplan(paint, epd);
-    paintHourplanDay(paint, epd, MONDAY);
+    paintHourplanDay(paint, epd, dataSchoolhoursbuffer, MONDAY);
 
     epd.TurnOnDisplay_Partial();
 

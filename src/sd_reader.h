@@ -6,54 +6,51 @@
 
 File planSchoolhours;
 String file = "stunde.txt";
+char dataSchoolhoursbuffer[10000];
 
 
-String readSDLine(int targetLine)
-{
-    int currentline = 0;
-    planSchoolhours =  SD.open(file);
+
+void readAllSDData() {
+    int bufferIndex = 0; // Index to track the position in the buffer
+    planSchoolhours = SD.open(file);
+    Serial.println("Reading data from SD card...");
+
     if (!planSchoolhours) { // Check if the file opened successfully
         Serial.println("Failed to open file");
-        return "";
+        return;
     }
-    while(planSchoolhours.available())
-    {
+
+    while (planSchoolhours.available()) {
+        // Read a line from the SD card
         String line = planSchoolhours.readStringUntil('\n');
-        currentline ++;
-        if(currentline == targetLine)
-        {
-            planSchoolhours.close(); //close after found
-            return line;
+        // Serial.println(line); // Print the line to the Serial Monitor
+
+        // Convert the line to a char array
+        line.toCharArray((char*)&dataSchoolhoursbuffer[bufferIndex], sizeof(dataSchoolhoursbuffer) - bufferIndex);
+
+        // Move the buffer index forward by the length of the line
+        bufferIndex += line.length();
+
+        // Add a separator (e.g., '\n' or '|') after the line
+        if (bufferIndex < sizeof(dataSchoolhoursbuffer) - 1) {
+            dataSchoolhoursbuffer[bufferIndex] = '|'; // Use '\n' as a separator
+            bufferIndex++;
         }
-    } 
-    planSchoolhours.close(); //ensure closing if fail
-    return "";
-}
+        Serial.println(line); // Print the line to the Serial Monitor
+        Serial.println(bufferIndex); // Print the buffer index to the Serial Monitor
 
-String getPartByIndex(String line, int index) {
-    int start = 0;
-    int end = -1;
-    int currentIndex = 0;
-
-    if(line == "Leer" | line == "MO" | line == "DI" | line == "MI" | line == "DO" | line == "FR")
-    {
-        return line; //Exit early if line is showing empty or weekday
+        // Ensure we don't overflow the buffer
+        if (bufferIndex >= sizeof(dataSchoolhoursbuffer) - 1) {
+            Serial.println("Buffer overflow! Data truncated.");
+            break;
+        }
+        delay(20); //Delay for not overwhelming SD card / SPI Bus
     }
 
-    while (currentIndex <= index) {
-        start = end + 1; // Start of the current part
-        end = line.indexOf(',', start); // Find the next comma
-        if (end == -1) { // If no more commas, set end to the end of the string
-            end = line.length();
-        }
+    // Null-terminate the buffer
+    dataSchoolhoursbuffer[bufferIndex] = '\0';
 
-        if (currentIndex == index) {
-            return line.substring(start, end); // Return the part at the desired index
-        }
-
-        currentIndex++;
-    }
-
-    return ""; // Return an empty string if the index is out of bounds
+    planSchoolhours.close(); // Close the file
+    Serial.println("Data read from SD card");
 }
 

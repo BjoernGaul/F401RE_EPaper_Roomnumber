@@ -36,7 +36,7 @@ void paintTimes(Paint paint, Epd epd)
         {
             yOffPaint = 5;
         }
-        paint.DrawStringAt(yOffPaint, i*35, schoolHourPaint, &Font16, COLORED);
+        paint.DrawStringAt(yOffPaint, (i-1)*34+35, schoolHourPaint, &Font16, COLORED);
     }
 
     epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 300-paint.GetHeight(), 0+paint.GetWidth(), 300);
