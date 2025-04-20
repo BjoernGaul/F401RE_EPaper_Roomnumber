@@ -46,9 +46,9 @@ void paintWriteRows(Paint paint, Epd epd, char* data) {
             }
         }
         if (dayIndices[day] == -1) {
-            Serial.print("Day ");
-            Serial.print(compareDay);
-            Serial.println(" not found in data");
+            // Serial.print("Day ");
+            // Serial.print(compareDay);
+            // Serial.println(" not found in data");
         }
     }
 
@@ -69,7 +69,7 @@ void paintWriteRows(Paint paint, Epd epd, char* data) {
         // Paint the data for the current day
         for (int day = 0; day < 5; day++) {
             int indexHour = dayIndices[day]; // Get the index for the current day
-            Serial.println("Paint data");
+            // Serial.println("Paint data");
             paint.SetWidth(32);
             paint.SetHeight(48);
             paint.Clear(UNCOLORED);
@@ -84,10 +84,10 @@ void paintWriteRows(Paint paint, Epd epd, char* data) {
             char entry[entryLength + 1];
             strncpy(entry, &data[indexHour], entryLength);
             entry[entryLength] = '\0';
-            Serial.println(entry); // Print the entry to the Serial Monitor
+            // Serial.println(entry); // Print the entry to the Serial Monitor
 
             if (strcmp(entry, "Leer\0") == 0) {
-                Serial.println("Leer\0");
+                // Serial.println("Leer\0");
                 dayIndices[day] += entryLength + 1; // Skip this entry and move to the next
                 paint.DrawHorizontalLine(0, 0, 48, COLORED); // Draw a horizontal line for the current hour
                 paint.DrawHorizontalLine(0, 31, 48, COLORED);
@@ -112,7 +112,7 @@ void paintWriteRows(Paint paint, Epd epd, char* data) {
 
             // Move to the next part in data
             dayIndices[day] += entryLength + 1; // +1 to skip the '|' separator
-            Serial.println(hour);
+            // Serial.println(hour);
         }
         
     }

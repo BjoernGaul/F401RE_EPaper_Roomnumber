@@ -31,53 +31,38 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
         if(data[i] == compareDay[0] && data[i+1] == compareDay[1] && data[i+2] == '|')
         {
             indexDay = i+3; //to get to the first character of the first hour
-            Serial.println("indexDay set");
-            Serial.println(indexDay);
+            // Serial.println("indexDay set");
+            // Serial.println(indexDay);
             break;
         }
     }
     if(indexDay == -1)
     {
-        Serial.println("indexDay not found");
+        // Serial.println("indexDay not found");
     }
-
-
-    //Grid
-    paint.Clear(UNCOLORED);
-    for(int yPosScreen = 259 ; yPosScreen > 0; yPosScreen -= 51 )
-    {
-        //Basic Grid
-        paint.SetHeight(40);
-        paint.SetWidth(8*50);
-        paintHorizontalShort(paint, epd);
-
-        epd.Display_Partial_Not_refresh(paint.GetImage(), 0, yPosScreen-paint.GetHeight()-5, 0+paint.GetWidth(), yPosScreen-5);
-    }
-
-    Serial.println("Grid set");
 
     //Title
-    paint.Clear(UNCOLORED);
     paint.SetWidth(24);
-    paint.SetHeight(200);
+    paint.SetHeight(258);
+    paint.Clear(UNCOLORED);
 
-    if(indWeekday = 1){paint.DrawStringAt(10, 0, "Montag", &Font20, COLORED);
-    }else if(indWeekday = 2){paint.DrawStringAt(10, 0, "Dienstag", &Font20, COLORED);
-    }else if(indWeekday = 3){paint.DrawStringAt(10, 0, "Mittwoch", &Font20, COLORED);
-    }else if(indWeekday = 4){paint.DrawStringAt(10, 0, "Donnerstag", &Font20, COLORED);
-    }else if(indWeekday = 5){paint.DrawStringAt(10, 0, "Freitag", &Font20, COLORED);
+    if(indWeekday = 1){paint.DrawStringAt(50, 0, "Montag", &Font20, COLORED);
+    }else if(indWeekday = 2){paint.DrawStringAt(50, 0, "Dienstag", &Font20, COLORED);
+    }else if(indWeekday = 3){paint.DrawStringAt(50, 0, "Mittwoch", &Font20, COLORED);
+    }else if(indWeekday = 4){paint.DrawStringAt(50, 0, "Donnerstag", &Font20, COLORED);
+    }else if(indWeekday = 5){paint.DrawStringAt(50, 0, "Freitag", &Font20, COLORED);
     }
-    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 58, 0+paint.GetWidth(), 258);
-    Serial.println("Title set");
+    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 0+paint.GetHeight());
+    // Serial.println("Title set");
 
     int indexHour = indexDay;
 
     //Paint data
     for (int i = 1; i < 12; i++) {
-        Serial.println("Paint data");
+        // Serial.println("Paint data");
+        paint.SetWidth(32);
+        paint.SetHeight(258);
         paint.Clear(UNCOLORED);
-        paint.SetWidth(16);
-        paint.SetHeight(200);
         // Find the length of the current hour data between '|' separators
         int entryLength = 0;
         while (data[indexHour + entryLength] != '|' && data[indexHour + entryLength] != '\0') {
@@ -88,11 +73,15 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
         char entry[entryLength + 1];
         strncpy(entry, &data[indexHour], entryLength);
         entry[entryLength] = '\0';
-        Serial.println(entry); // Print the entry to the Serial Monitor
+        // Serial.println(entry); // Print the entry to the Serial Monitor
 
         if (strcmp(entry, "Leer\0") == 0) {
-            Serial.println("Leer\0");
+            // Serial.println("Leer\0");
             indexHour += entryLength + 1; // Skip this entry and move to the next
+            // Draw a horizontal line for the current hour
+            paint.DrawHorizontalLine(0, 0, 258, COLORED); // Draw a horizontal line for the current hour
+            paint.DrawHorizontalLine(0, 31, 258, COLORED); // Draw a horizontal line for the current hour
+            epd.Display_Partial_Not_refresh(paint.GetImage(), (i-1)*32+32, 0, (i-1)*32+32 + 32, 258);
             continue;
         }
 
@@ -103,15 +92,18 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
 
         if (subject && schoolclass && teacher) {
             // Paint the hour, subject, and room
-            paint.DrawStringAt(10, 0, subject, &Font16, COLORED);
-            paint.DrawStringAt(50, 0, schoolclass, &Font16, COLORED);
-            paint.DrawStringAt(150, 0, teacher, &Font16, COLORED);
+            paint.DrawStringAt(10, 5, subject, &Font16, COLORED);
+            paint.DrawStringAt(50, 5, schoolclass, &Font16, COLORED);
+            paint.DrawStringAt(150, 5, teacher, &Font16, COLORED);
         }
 
+        // Draw a horizontal line for the current hour
+        paint.DrawHorizontalLine(0, 0, 258, COLORED); // Draw a horizontal line for the current hour
+        paint.DrawHorizontalLine(0, 31, 258, COLORED); // Draw a horizontal line for the current hour
         // Move to the next part in data
         indexHour += entryLength + 1; // +1 to skip the '|' separator
-        Serial.println(i);
-        epd.Display_Partial_Not_refresh(paint.GetImage(), (i-1)*32+32, 58, (i-1)*32+32 + 16, 258);
+        // Serial.println(i);
+        epd.Display_Partial_Not_refresh(paint.GetImage(), (i-1)*32+32, 0, (i-1)*32+32 + 32, 258);
     }
 
     paintTimes(paint, epd);

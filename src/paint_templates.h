@@ -20,8 +20,8 @@ void paintTimes(Paint paint, Epd epd)
     paint.SetWidth(8*50);
     paint.Clear(UNCOLORED);
 
-    //Time
-    paint.DrawStringAt(0, 0, "11:30", &Font12, COLORED);
+    //Day
+    paint.DrawStringAt(0, 0, "Montag", &Font8, COLORED);
     //Date
     paint.DrawStringAt(0, 15, "10.04.25", &Font8, COLORED);
 
@@ -47,6 +47,7 @@ void paintTimes(Paint paint, Epd epd)
     }
 
     epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 300-paint.GetHeight(), 0+paint.GetWidth(), 300);
+    paint.Clear(UNCOLORED);
 }
 
 void paintHorizontalShort(Paint paint, Epd epd)

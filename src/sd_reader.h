@@ -48,12 +48,12 @@ void readAllSDData() {
             dataSchoolhoursbuffer[bufferIndex] = '|'; // Use '\n' as a separator
             bufferIndex++;
         }
-        Serial.println(line); // Print the line to the Serial Monitor
-        Serial.println(bufferIndex); // Print the buffer index to the Serial Monitor
+        // Serial.println(line); // Print the line to the Serial Monitor
+        // Serial.println(bufferIndex); // Print the buffer index to the Serial Monitor
 
         // Ensure we don't overflow the buffer
         if (bufferIndex >= sizeof(dataSchoolhoursbuffer) - 1) {
-            Serial.println("Buffer overflow! Data truncated.");
+            // Serial.println("Buffer overflow! Data truncated.");
             break;
         }
         delay(20); //Delay for not overwhelming SD card / SPI Bus
@@ -75,6 +75,6 @@ void readAllSDData() {
     dataSchoolhoursbuffer[writeIndex] = '\0'; // Null-terminate after removing spaces
 
     planSchoolhours.close(); // Close the file
-    Serial.println("Data read from SD card");
+    // Serial.println("Data read from SD card");
 }
 

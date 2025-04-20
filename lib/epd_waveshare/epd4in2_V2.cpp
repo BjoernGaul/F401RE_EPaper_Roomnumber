@@ -396,7 +396,7 @@ void Epd::Display_Partial(unsigned char* Image, unsigned int  Xstart, unsigned i
 	
 	Width = Xend -  Xstart;
 	IMAGE_COUNTER = Width * (Yend-Ystart);
-    Serial.println(IMAGE_COUNTER);
+    // Serial.println(IMAGE_COUNTER);
 
 	Xend -= 1;
 	Yend -= 1;	
@@ -455,7 +455,7 @@ void Epd::Display_Partial_Not_refresh(unsigned char* Image, unsigned int  Xstart
 	
 	Width = Xend -  Xstart;
 	IMAGE_COUNTER = Width * (Yend-Ystart);
-    Serial.println(IMAGE_COUNTER);
+    // Serial.println(IMAGE_COUNTER);
 
 	Xend -= 1;
 	Yend -= 1;	
