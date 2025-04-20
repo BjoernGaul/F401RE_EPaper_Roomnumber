@@ -12,7 +12,7 @@
 void paintHorizontalShort(Paint paint, Epd epd);
 void paintVerticalLong(Paint paint, Epd epd, int yPosPaintScreen);
 
-void paintTimes(Paint paint, Epd epd)
+void paintTimes(Paint paint, Epd epd, char* date, int indWeekday)
 {
     //Grid Times
 
@@ -21,9 +21,14 @@ void paintTimes(Paint paint, Epd epd)
     paint.Clear(UNCOLORED);
 
     //Day
-    paint.DrawStringAt(0, 0, "Montag", &Font8, COLORED);
+    if(indWeekday = 1){paint.DrawStringAt(0, 0, "Montag", &Font8, COLORED);
+    }else if(indWeekday = 2){paint.DrawStringAt(0, 0, "Dienstag", &Font8, COLORED);
+    }else if(indWeekday = 3){paint.DrawStringAt(0, 0, "Mittwoch", &Font8, COLORED);
+    }else if(indWeekday = 4){paint.DrawStringAt(0, 0, "Donnerstag", &Font8, COLORED);
+    }else if(indWeekday = 5){paint.DrawStringAt(0, 0, "Freitag", &Font8, COLORED);
+    }
     //Date
-    paint.DrawStringAt(0, 15, "10.04.25", &Font8, COLORED);
+    paint.DrawStringAt(0, 15, date, &Font8, COLORED);
 
     paint.DrawHorizontalLine(0, 32, 40, COLORED);
 

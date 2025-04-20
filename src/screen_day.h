@@ -11,7 +11,7 @@
 
 
 
-void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
+void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday, char* date)
 {
     int partsInd = 1;
     char compareDay[3] = "MO";
@@ -106,7 +106,7 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday)
         epd.Display_Partial_Not_refresh(paint.GetImage(), (i-1)*32+32, 0, (i-1)*32+32 + 32, 258);
     }
 
-    paintTimes(paint, epd);
+    paintTimes(paint, epd, date, indWeekday);
 }
 
 

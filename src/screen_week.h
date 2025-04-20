@@ -11,7 +11,7 @@
 void paintWriteRows(Paint paint, Epd epd, char* data);
 
 
-void paintHourplan(Paint paint, Epd epd, char* data)
+void paintHourplan(Paint paint, Epd epd, char* data, char* date, int weekday)
 {
     
     //Grid
@@ -22,7 +22,7 @@ void paintHourplan(Paint paint, Epd epd, char* data)
         paint.Clear(UNCOLORED);
     }
     paint.Clear(UNCOLORED);
-    paintTimes(paint, epd); // Call the function to paint the times
+    paintTimes(paint, epd, date, weekday); // Call the function to paint the times
     paint.Clear(UNCOLORED);
     paintWriteRows(paint, epd, data); // Call the function to write the rows of data
 
