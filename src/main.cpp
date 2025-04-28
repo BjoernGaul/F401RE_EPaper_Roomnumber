@@ -11,6 +11,8 @@
 #include "Wire.h"
 #include "rtc_datetime.h"
 #include "Adafruit_BME280.h"
+#include "screen_current.h"
+#include "screen_team.h"
 
 Epd epd;
 unsigned char image[20000];
@@ -190,7 +192,7 @@ void loop() {
                             dataSchoolhoursbuffer, 
                             Date, weekday);
                 epd.TurnOnDisplay_Partial();
-                epd.Sleep(); // Put the display to sleep to save power
+                epd.Sleep(); 
             break;
         
             case 1:
@@ -201,7 +203,28 @@ void loop() {
                                 dataSchoolhoursbuffer, 
                                 indexDay, Date, indexDay);
                 epd.TurnOnDisplay_Partial();
-                epd.Sleep(); // Put the display to sleep to save power     
+                epd.Sleep();     
+            break;
+
+            case 3:
+                Serial.println("State 2: Current Information");
+                epd.Init();
+                epd.Clear();
+                paintCurrentInformation(paint, epd, 
+                                        dataSchoolhoursbuffer, 
+                                        Date, digitTime, weekday, temperature, humidity);
+                epd.TurnOnDisplay_Partial();
+                epd.Sleep(); 
+            break;
+
+            case 4:
+                    Serial.println("State 3: Team Information");
+                    epd.Init();
+                    epd.Clear();
+                    paintTeam(epd, paint, weekday, Date);
+                    epd.TurnOnDisplay_Partial();
+                    epd.Sleep(); 
+
             break;
 
             default:

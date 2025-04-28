@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Arduino.h>
 
 int getCurrentDayIndex(char* data, int indWeekday)

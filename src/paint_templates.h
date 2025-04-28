@@ -11,6 +11,7 @@
 
 void paintHorizontalShort(Paint paint, Epd epd);
 void paintVerticalLong(Paint paint, Epd epd, int yPosPaintScreen);
+void paintUpperLeftCorner(Paint paint, Epd epd, int indWeekday, char* date);
 
 void paintTimes(Paint paint, Epd epd, char* date, int indWeekday)
 {
@@ -77,4 +78,30 @@ void paintVerticalLong(Paint paint, Epd epd, int yPosScreen)
         paint.SetHeight(1);
         paint.Clear(COLORED);
         epd.Display_Partial_Not_refresh(paint.GetImage(), 0, yPosScreen, 0+paint.GetWidth(), yPosScreen+paint.GetHeight());
+}
+
+void paintUpperLeftCorner(Paint paint, Epd epd, int indWeekday, char* date)
+{
+    paint.SetHeight(40);
+    paint.SetWidth(8*4);
+    paint.Clear(UNCOLORED);
+
+    //Day
+    if(indWeekday = 1){paint.DrawStringAt(0, 0, "Montag", &Font8, COLORED);
+    }else if(indWeekday = 2){paint.DrawStringAt(0, 0, "Dienstag", &Font8, COLORED);
+    }else if(indWeekday = 3){paint.DrawStringAt(0, 0, "Mittwoch", &Font8, COLORED);
+    }else if(indWeekday = 4){paint.DrawStringAt(0, 0, "Donnerstag", &Font8, COLORED);
+    }else if(indWeekday = 5){paint.DrawStringAt(0, 0, "Freitag", &Font8, COLORED);
+    }else if(indWeekday = 6){paint.DrawStringAt(0, 0, "Samstag", &Font8, COLORED);
+    }else if(indWeekday = 0){paint.DrawStringAt(0, 0, "Sonntag", &Font8, COLORED);
+    }
+
+    //Date
+    paint.DrawStringAt(0, 15, date, &Font8, COLORED);
+
+    paint.DrawHorizontalLine(0, 32, 40, COLORED);
+    paint.DrawVerticalLine(39, 0, 40, COLORED); // Draw a vertical line to separate the date and time from Title
+    
+    // Display the current information on the e-paper display
+    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 0+paint.GetHeight());
 }
