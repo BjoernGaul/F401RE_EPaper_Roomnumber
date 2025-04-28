@@ -10,28 +10,48 @@
 #include "sd_reader.h"
 #include "Wire.h"
 #include "rtc_datetime.h"
+#include "Adafruit_BME280.h"
 
 Epd epd;
 unsigned char image[20000];
 Paint paint(image, 8*50, 1);    //width should be the multiple of 8 
 
+uint32_t SerialClock = PB8;
+uint32_t SerialData = PB9;
+TwoWire MyWire(SerialData, SerialClock); // Create a TwoWire object with custom SDA and SCL pins
+
 RTC_DS3231 rtc; // Create an RTC object
 int weekday = 0; // Variable to store the current day of the week
 char Date[15]; // Buffer to store the date string
 char Time[10]; // Buffer to store the time string
+float digitTime = 0; // Variable to store the decimal time
+int indexDay = 0; // Variable to store the index of the current day in the data string
+int dayCheckTimer = 0; // Timer variable to check the day
+
+Adafruit_BME280 bme; // use I2C interface
+float temperature, humidity; // Variables to store sensor data
+
+#define TIMER_INTERVAL_MICROSEC (5 * 60 * 1000000) // 5 minutes in microseconds
+
+volatile bool fiveMinuteFlag = false; // Flag to indicate the timer event
+
+void onTimerInterrupt() {
+    fiveMinuteFlag = true; // Set the flag to true every 5 minutes
+}
 
 #define COLORED     0
 #define UNCOLORED   1
 
-#define sdcsPin PD_8
+#define sdcsPin PA9
 #define ButtonPin PC13
+
 
 
 bool ButtonPressed = false; // Flag to indicate button press state
 int statePaper = 0; // State variable to track the current state of the paper
 
 volatile unsigned long lastInterruptTime = 0;
-uint64_t lastMillisTimeTest = 0; // Variable to store the last time the button was pressed
+uint64_t lastMillisDispChange = 0; // Variable to store the last time the button was pressed
 
 
 
@@ -39,22 +59,12 @@ uint64_t lastMillisTimeTest = 0; // Variable to store the last time the button w
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(115200);
+    delay(1000); // Wait for the serial connection to establish
     Serial.println("Starting");
 
-    pinMode(ButtonPin, INPUT_PULLUP); // Set the button pin as input with pull-up resistor
-    attachInterrupt(digitalPinToInterrupt(ButtonPin), []() {
-        unsigned long interruptTime = millis();
-        if (interruptTime - lastInterruptTime > 200) { // 200ms debounce time
-            ButtonPressed = true;
-            Serial.println("Button pressed!");
-        }
-        lastInterruptTime = interruptTime;
-    }, FALLING); // Trigger on falling edge (button press)
-
-
-    Wire.begin(SCL,SDA);
-
     Serial.println("Scanning...");
+
+    Wire.begin(SerialData, SerialClock); // Initialize the I2C bus with custom SDA and SCL pins
 
     for (uint8_t address = 1; address < 127; address++) { // I2C addresses range from 0x01 to 0x7F
         Wire.beginTransmission(address);
@@ -72,14 +82,43 @@ void setup() {
     }
 
     Serial.println("Scan complete.");
-    delay(5000); // Wait 5 seconds before scanning 
-
     delay(50);
-    initRTC(rtc); // Initialize the RTC module
+
+    // Initialize the hardware timer
+    HardwareTimer *MyTimer = new HardwareTimer(TIM2); // Use TIM2 for the timer
+    MyTimer->setOverflow(TIMER_INTERVAL_MICROSEC, MICROSEC_FORMAT); // Set overflow to 5 minutes
+    MyTimer->attachInterrupt(onTimerInterrupt); // Attach the interrupt handler
+    MyTimer->resume(); // Start the timer
+
+    bme.begin(0x76);
+
+    delay(1000); // Wait for the sensor to stabilize
+
+    Serial.println("Initializing RTC...");
+    rtc.begin(); // Initialize the RTC
+    delay(1000); // Wait for the sensor to stabilize
+    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // Set the RTC to the current date and time
+    // delay(1000); // Wait for the sensor to stabilize
+
     weekday = getDayOfWeek(rtc); // Get the current day of the week
     getDate(rtc, Date); // Get the current date
-    getTime(rtc, Time); // Get the current time
+    getTime(rtc, Time, digitTime); // Get the current time
 
+    Serial.print("Date: ");
+    Serial.println(Date); // Print the date to the Serial Monitor
+    Serial.print("Time: ");
+    Serial.println(Time); // Print the time to the Serial Monitor
+
+
+    pinMode(ButtonPin, INPUT_PULLUP); // Set the button pin as input with pull-up resistor
+    attachInterrupt(digitalPinToInterrupt(ButtonPin), []() {
+        unsigned long interruptTime = millis();
+        if (interruptTime - lastInterruptTime > 200) { // 200ms debounce time
+            ButtonPressed = true;
+            Serial.println("Button pressed!");
+        }
+        lastInterruptTime = interruptTime;
+    }, FALLING); // Trigger on falling edge (button press)
 
     pinMode(PD_10, OUTPUT); // Set PD_10 as output for CS pin
     digitalWrite(PD_10, HIGH); // Set PD_10 to HIGH (inactive state)
@@ -89,7 +128,7 @@ void setup() {
 
     delay(500);
 
-    if (!initSDCard()) {
+    if (!initSDCard(3, sdcsPin)) {
       Serial.println("SD card initialization failed. Halting...");
       while (true); // Halt execution
     }
@@ -117,11 +156,25 @@ void setup() {
 
     epd.Init();
     epd.Sleep(); // Put the display to sleep to save power
-
+    lastMillisDispChange = millis(); // Initialize the lastMillisDispChange variable to the current time
 }
 
 void loop() {
-    if (ButtonPressed) { // Check if the button was pressed or if 10 seconds have passed
+    if(fiveMinuteFlag) {
+        fiveMinuteFlag = false; // Reset the flag
+        dayCheckTimer++; // Increment the timer variable
+        if (dayCheckTimer >= 6) { // Check if 30 minutes have passed
+            weekday = getDayOfWeek(rtc); // Get the current day of the week
+            getDate(rtc, Date); // Get the current date
+            indexDay = getCurrentDayIndex(dataSchoolhoursbuffer, weekday); // Get the index of the current day in the data string
+            dayCheckTimer = 0; // Reset the timer variable
+        }
+        getTime(rtc, Time, digitTime); // Get the current time
+        temperature = bme.readTemperature(); // Read temperature
+        humidity = bme.readHumidity(); // Read humidity
+    }
+
+    if (ButtonPressed || (millis() - lastMillisDispChange) > (30*1000)) { // Check if the button was pressed or if 10 seconds have passed
         if(statePaper >= 1){
             statePaper = 0; // Reset to the first state if it exceeds the number of states
         } else {
@@ -131,27 +184,30 @@ void loop() {
         {
             case 0:
                 Serial.println("State 0: Full Hourplan");
-                lastMillisTimeTest = millis();
                 epd.Init();
                 epd.Clear();
-                paintHourplan(paint, epd, dataSchoolhoursbuffer, Date, weekday);
+                paintHourplan(paint, epd, 
+                            dataSchoolhoursbuffer, 
+                            Date, weekday);
                 epd.TurnOnDisplay_Partial();
                 epd.Sleep(); // Put the display to sleep to save power
             break;
         
             case 1:
                 Serial.println("State 1: Weekday Hourplan");
-                lastMillisTimeTest = millis();
                 epd.Init();
                 epd.Clear();
-                paintHourplanDay(paint, epd, dataSchoolhoursbuffer, weekday, Date);
+                paintHourplanDay(paint, epd, 
+                                dataSchoolhoursbuffer, 
+                                indexDay, Date, indexDay);
                 epd.TurnOnDisplay_Partial();
-                epd.Sleep(); // Put the display to sleep to save power         
+                epd.Sleep(); // Put the display to sleep to save power     
             break;
 
             default:
             break;
         }
+        lastMillisDispChange = millis(); 
         ButtonPressed = false;
     }
 }

@@ -7,9 +7,8 @@
 File planSchoolhours;
 String file = "stunde.txt";
 char dataSchoolhoursbuffer[10000];
-extern int sdcsPin = PD_8; // Pin for SD card CS (Chip Select)
 
-bool initSDCard(int retries = 3) {
+bool initSDCard(int retries = 3, int sdcsPin = PD_8) {
     for (int attempt = 0; attempt < retries; attempt++) {
         if (SD.begin(sdcsPin)) {
             Serial.println("SD card initialized successfully");

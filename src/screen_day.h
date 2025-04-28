@@ -4,6 +4,7 @@
 #include "epdpaint.h"
 #include "paint_templates.h"
 #include "sd_reader.h"
+#include "functions.h"
 
 #define COLORED     0
 #define UNCOLORED   1
@@ -11,35 +12,9 @@
 
 
 
-void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday, char* date)
+void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday, char* date, int indexDay)
 {
     int partsInd = 1;
-    char compareDay[3] = "MO";
-
-    if      (indWeekday == 1){compareDay[0] = 'M'; compareDay[1] = 'O'; //get the right Day to compare for search in data
-    }else if(indWeekday == 2){compareDay[0] = 'D'; compareDay[1] = 'I';//DI
-    }else if(indWeekday == 3){compareDay[0] = 'M'; compareDay[1] = 'I';//MI
-    }else if(indWeekday == 4){compareDay[0] = 'D'; compareDay[1] = 'O';//DO
-    }else if(indWeekday == 5){compareDay[0] = 'F'; compareDay[1] = 'R';//FR
-    }
-    
-
-    //look for index of day in data
-    int indexDay = -1;
-    for(int i = 0; i < strlen(data); i++)
-    {
-        if(data[i] == compareDay[0] && data[i+1] == compareDay[1] && data[i+2] == '|')
-        {
-            indexDay = i+3; //to get to the first character of the first hour
-            // Serial.println("indexDay set");
-            // Serial.println(indexDay);
-            break;
-        }
-    }
-    if(indexDay == -1)
-    {
-        // Serial.println("indexDay not found");
-    }
 
     //Title
     paint.SetWidth(24);
