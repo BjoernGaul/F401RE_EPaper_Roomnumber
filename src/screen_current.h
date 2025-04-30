@@ -10,30 +10,30 @@
 #define Tempdata true
 #define Humiditydata false
 
+bool getCurrentStatus(char* data, int hour, int indexDay);
 void paintTemperature(Paint paint, Epd epd, float temperature);
+void paintSensorDate(Paint paint, Epd epd, float sensorData, bool isTemperature);
 
-void paintCurrentInformation(Paint paint, Epd epd, char* data, char* date, int time, int indWeekday, float temperature, float humidity)
+void paintCurrentInformation(Paint paint, Epd epd, char* data, char* date, int time, int Weekday, float temperature, float humidity)
 {
     // Clear the display
     paint.Clear(UNCOLORED);
     
-    paintUpperLeftCorner(paint, epd, indWeekday, date);
+    paintUpperLeftCorner(paint, epd, Weekday, date);
 
     //Title
-    paint.SetHeight(280);
+    paint.SetHeight(260);
     paint.SetWidth(8*5);
     paint.Clear(UNCOLORED);
 
-    if(getCurrentStatus(data, time, indWeekday))
+    if(getCurrentStatus(data, time, getCurrentDayIndex(data, Weekday)))
     {
-        paint.DrawStringAt(50, 0, "Belegt", &Font20, COLORED); // Display "Occupied" if the current hour is occupied
+        paint.DrawStringAt(50, 5, "Belegt", &Font24, COLORED); // Display "Occupied" if the current hour is occupied
     } else{
-        paint.DrawStringAt(50, 0, "Frei", &Font20, COLORED); // Display "Free" if the current hour is free
+        paint.DrawStringAt(50, 5, "Frei", &Font24, COLORED); // Display "Free" if the current hour is free
     }
 
-    paint.DrawHorizontalLine(0, 32, 280, COLORED); // Draw a horizontal line for the current hour
-
-    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 40, 0+paint.GetWidth(), 0+paint.GetHeight());
+    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 0+paint.GetHeight());
 
     paintSensorDate(paint, epd, temperature, Tempdata); // Display the temperature on the e-paper display
     paintSensorDate(paint, epd, humidity, Humiditydata); // Display the humidity on the e-paper display
@@ -48,10 +48,10 @@ bool getCurrentStatus(char* data, int hour, int indexDay)
 
     if (indexHour == -1) {
         Serial.println("Error indexHour not found");
-        return;
+        return occupied; // Return false if the index is not found
     }else if(indexHour == 0){
         Serial.println("Ausserhalb der Schulzeit");
-        return;
+        return occupied; // Return false if the index is not found
     }
 
     int entryLength = 0;
@@ -77,35 +77,34 @@ void paintSensorDate(Paint paint, Epd epd, float sensorData, bool isTemperature)
 
     if(isTemperature)
     {
-        paint.DrawStringAt(50, 0, "Temperatur", &Font20, COLORED); // Display "Temperature" if the current hour is occupied
+        paint.DrawStringAt(50, 10, "Temperatur", &Font20, COLORED); // Display "Temperature" if the current hour is occupied
         epd.Display_Partial_Not_refresh(paint.GetImage(), 41, 0, 41+paint.GetWidth(), 0+paint.GetHeight());
     } else{
-        paint.DrawStringAt(50, 0, "Luftfeuchtigkeit", &Font20, COLORED); // Display "Humidity" if the current hour is free
+        paint.DrawStringAt(50, 10, "Luftfeuchtigkeit", &Font20, COLORED); // Display "Humidity" if the current hour is free
         epd.Display_Partial_Not_refresh(paint.GetImage(), 181, 0, 181+paint.GetWidth(), 0+paint.GetHeight());
     }
 
-
-
-
     // Data
     paint.SetHeight(160);
-    paint.SetWidth(8*15);
+    paint.SetWidth(8*10);
     paint.Clear(UNCOLORED);
     if(isTemperature)
     {
         char tempStr[7];
         sprintf(tempStr, "%.2f C", sensorData); // Format the string with the temperature value
+        Serial.println(tempStr); // Print the temperature value to the serial monitor
         paint.DrawStringAt(0, 0, tempStr, &Font24, COLORED);
     
         // Display the current information on the e-paper display
-        epd.Display_Partial_Not_refresh(paint.GetImage(), 71, 80, 71+paint.GetWidth(), 0+paint.GetHeight());
+        epd.Display_Partial_Not_refresh(paint.GetImage(), 71, 220-paint.GetHeight(), 71+paint.GetWidth(), 220);
     } else{
         char tempStr[7];
         sprintf(tempStr, "%.2f %", sensorData); // Format the string with the temperature value
+        Serial.println(tempStr); // Print the temperature value to the serial monitor
         paint.DrawStringAt(0, 0, tempStr, &Font24, COLORED);
     
         // Display the current information on the e-paper display
-        epd.Display_Partial_Not_refresh(paint.GetImage(), 241, 80, 241+paint.GetWidth(), 0+paint.GetHeight());
+        epd.Display_Partial_Not_refresh(paint.GetImage(), 241, 220-paint.GetHeight(), 241+paint.GetWidth(), 220);
     }
 
 }

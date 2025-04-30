@@ -50,7 +50,7 @@ void onTimerInterrupt() {
 
 
 bool ButtonPressed = false; // Flag to indicate button press state
-int statePaper = 0; // State variable to track the current state of the paper
+int statePaper = 1; // State variable to track the current state of the paper
 
 volatile unsigned long lastInterruptTime = 0;
 uint64_t lastMillisDispChange = 0; // Variable to store the last time the button was pressed
@@ -106,11 +106,8 @@ void setup() {
     getDate(rtc, Date); // Get the current date
     getTime(rtc, Time, digitTime); // Get the current time
 
-    Serial.print("Date: ");
-    Serial.println(Date); // Print the date to the Serial Monitor
-    Serial.print("Time: ");
-    Serial.println(Time); // Print the time to the Serial Monitor
-
+    temperature = bme.readTemperature(); // Read temperature
+    humidity = bme.readHumidity(); // Read humidity
 
     pinMode(ButtonPin, INPUT_PULLUP); // Set the button pin as input with pull-up resistor
     attachInterrupt(digitalPinToInterrupt(ButtonPin), []() {
@@ -174,10 +171,15 @@ void loop() {
         getTime(rtc, Time, digitTime); // Get the current time
         temperature = bme.readTemperature(); // Read temperature
         humidity = bme.readHumidity(); // Read humidity
+        Serial.print("Temperature: ");
+        Serial.print(temperature);
+        Serial.print(" °C, Humidity: ");
+        Serial.print(humidity);
+        Serial.println(" %");
     }
 
     if (ButtonPressed || (millis() - lastMillisDispChange) > (30*1000)) { // Check if the button was pressed or if 10 seconds have passed
-        if(statePaper >= 1){
+        if(statePaper >= 3){
             statePaper = 0; // Reset to the first state if it exceeds the number of states
         } else {
             statePaper++; // Increment the state variable
@@ -201,12 +203,12 @@ void loop() {
                 epd.Clear();
                 paintHourplanDay(paint, epd, 
                                 dataSchoolhoursbuffer, 
-                                indexDay, Date, indexDay);
+                                weekday, Date, indexDay);
                 epd.TurnOnDisplay_Partial();
                 epd.Sleep();     
             break;
 
-            case 3:
+            case 2:
                 Serial.println("State 2: Current Information");
                 epd.Init();
                 epd.Clear();
@@ -217,7 +219,7 @@ void loop() {
                 epd.Sleep(); 
             break;
 
-            case 4:
+            case 3:
                     Serial.println("State 3: Team Information");
                     epd.Init();
                     epd.Clear();

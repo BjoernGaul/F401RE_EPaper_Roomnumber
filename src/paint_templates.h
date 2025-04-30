@@ -87,21 +87,40 @@ void paintUpperLeftCorner(Paint paint, Epd epd, int indWeekday, char* date)
     paint.Clear(UNCOLORED);
 
     //Day
-    if(indWeekday = 1){paint.DrawStringAt(0, 0, "Montag", &Font8, COLORED);
-    }else if(indWeekday = 2){paint.DrawStringAt(0, 0, "Dienstag", &Font8, COLORED);
-    }else if(indWeekday = 3){paint.DrawStringAt(0, 0, "Mittwoch", &Font8, COLORED);
-    }else if(indWeekday = 4){paint.DrawStringAt(0, 0, "Donnerstag", &Font8, COLORED);
-    }else if(indWeekday = 5){paint.DrawStringAt(0, 0, "Freitag", &Font8, COLORED);
-    }else if(indWeekday = 6){paint.DrawStringAt(0, 0, "Samstag", &Font8, COLORED);
-    }else if(indWeekday = 0){paint.DrawStringAt(0, 0, "Sonntag", &Font8, COLORED);
+    if(indWeekday = 1){paint.DrawStringAt(2, 0, "Montag", &Font8, COLORED);
+    }else if(indWeekday = 2){paint.DrawStringAt(2, 0, "Dienstag", &Font8, COLORED);
+    }else if(indWeekday = 3){paint.DrawStringAt(2, 0, "Mittwoch", &Font8, COLORED);
+    }else if(indWeekday = 4){paint.DrawStringAt(2, 0, "Donnerstag", &Font8, COLORED);
+    }else if(indWeekday = 5){paint.DrawStringAt(2, 0, "Freitag", &Font8, COLORED);
+    }else if(indWeekday = 6){paint.DrawStringAt(2, 0, "Samstag", &Font8, COLORED);
+    }else if(indWeekday = 0){paint.DrawStringAt(2, 0, "Sonntag", &Font8, COLORED);
     }
 
     //Date
-    paint.DrawStringAt(0, 15, date, &Font8, COLORED);
+    paint.DrawStringAt(1, 15, date, &Font8, COLORED);
 
     paint.DrawHorizontalLine(0, 32, 40, COLORED);
     paint.DrawVerticalLine(39, 0, 40, COLORED); // Draw a vertical line to separate the date and time from Title
     
     // Display the current information on the e-paper display
-    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 0+paint.GetHeight());
+    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 300-paint.GetHeight(), 0+paint.GetWidth(), 300);
+}
+
+void paintLoadingscreen(Paint paint, Epd epd)
+{
+    //Loading screen
+    paint.SetHeight(300);
+    paint.SetWidth(8*8);
+    paint.Clear(UNCOLORED);
+
+    paint.DrawStringAt(5, 5, "Loading...", &Font24, COLORED);
+    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 300);
+
+    paint.Clear(UNCOLORED);
+    for(int xpos=64; xpos < 400; xpos+=64)
+    {
+        epd.Display_Partial_Not_refresh(paint.GetImage(), xpos, 0, xpos+paint.GetWidth(), 300);
+    }
+
+
 }

@@ -69,8 +69,11 @@ int getCurrentHourIndex(char* data, float time, int indexDay)
         schoolHour = 0;
     }
 
+    Serial.println("schoolHour set");
+    Serial.println(schoolHour);
+
     //look for index of hour in data
-    int indexHour = -1;
+    int indexHour = indexDay; // Start from the index of the current day
 
     for(int i = 1; i < schoolHour; i++)
     {
@@ -79,6 +82,10 @@ int getCurrentHourIndex(char* data, float time, int indexDay)
             entryLength++;
         }
         indexHour += entryLength + 1; // Skip this entry and move to the next
+        Serial.println("indexHour set");
+        Serial.println(indexHour);
     }
+    Serial.println("indexHour return");
+    Serial.println(indexHour);
     return indexHour;
 }
