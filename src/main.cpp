@@ -50,7 +50,7 @@ void onTimerInterrupt() {
 
 
 bool ButtonPressed = false; // Flag to indicate button press state
-int statePaper = 1; // State variable to track the current state of the paper
+int statePaper = 0; // State variable to track the current state of the paper
 
 volatile unsigned long lastInterruptTime = 0;
 uint64_t lastMillisDispChange = 0; // Variable to store the last time the button was pressed
@@ -104,10 +104,16 @@ void setup() {
 
     weekday = getDayOfWeek(rtc); // Get the current day of the week
     getDate(rtc, Date); // Get the current date
-    getTime(rtc, Time, digitTime); // Get the current time
+    getTime(rtc, Time, &digitTime); // Get the current time
 
     temperature = bme.readTemperature(); // Read temperature
     humidity = bme.readHumidity(); // Read humidity
+
+    Serial.print("Temperature: ");
+    Serial.print(temperature);
+    Serial.print(" °C, Humidity: ");
+    Serial.print(humidity);
+    Serial.println(" %");
 
     pinMode(ButtonPin, INPUT_PULLUP); // Set the button pin as input with pull-up resistor
     attachInterrupt(digitalPinToInterrupt(ButtonPin), []() {
@@ -149,7 +155,8 @@ void setup() {
 
     paint.SetRotate(3);
 
-    paintHourplan(paint, epd, dataSchoolhoursbuffer, Date, weekday);
+     paintHourplan(paint, epd, dataSchoolhoursbuffer, Date, weekday);
+    //paintCurrentInformation(paint, epd, dataSchoolhoursbuffer, Date, digitTime, weekday, temperature, humidity);
 
     epd.TurnOnDisplay_Partial(); // Turn on the display with fast refresh
 
@@ -168,17 +175,17 @@ void loop() {
             indexDay = getCurrentDayIndex(dataSchoolhoursbuffer, weekday); // Get the index of the current day in the data string
             dayCheckTimer = 0; // Reset the timer variable
         }
-        getTime(rtc, Time, digitTime); // Get the current time
+        getTime(rtc, Time, &digitTime); // Get the current time
         temperature = bme.readTemperature(); // Read temperature
         humidity = bme.readHumidity(); // Read humidity
         Serial.print("Temperature: ");
-        Serial.print(temperature);
+        Serial.print(bme.readTemperature());
         Serial.print(" °C, Humidity: ");
-        Serial.print(humidity);
+        Serial.print(bme.readHumidity());
         Serial.println(" %");
     }
 
-    if (ButtonPressed || (millis() - lastMillisDispChange) > (30*1000)) { // Check if the button was pressed or if 10 seconds have passed
+    if (ButtonPressed || (millis() - lastMillisDispChange) > (30*1000)) { // Check if the button was pressed or if 10 seconds have passed || (millis() - lastMillisDispChange) > (30*1000)
         if(statePaper >= 3){
             statePaper = 0; // Reset to the first state if it exceeds the number of states
         } else {

@@ -16,12 +16,6 @@ void paintHourplan(Paint paint, Epd epd, char* data, char* date, int weekday)
     
     //Grid
     paint.Clear(UNCOLORED);
-    for(int yPosScreen = 259 ; yPosScreen > 0; yPosScreen -= 51 )
-    {
-        paintVerticalLong(paint, epd, yPosScreen);
-        paint.Clear(UNCOLORED);
-    }
-    paint.Clear(UNCOLORED);
     paintTimes(paint, epd, date, weekday); // Call the function to paint the times
     paint.Clear(UNCOLORED);
     paintWriteRows(paint, epd, data); // Call the function to write the rows of data
@@ -60,7 +54,7 @@ void paintWriteRows(Paint paint, Epd epd, char* data) {
         paint.DrawStringAt(2, 4, days[day], &Font24, COLORED); // Draw the day marker
         paint.DrawHorizontalLine(0, 0, 48, COLORED); // Draw a horizontal line for the current day
         paint.DrawHorizontalLine(0, 31, 48, COLORED); // Draw a horizontal line for the current day
-        epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 258 - (51 * day) - 48, 0 + 32, 258 - (51 * day));
+        epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 248 - (51 * day) - 48, 0 + 32, 248 - (51 * day));
     }
 
     // Iterate through each hour and write the data to the screen
@@ -91,7 +85,7 @@ void paintWriteRows(Paint paint, Epd epd, char* data) {
                 dayIndices[day] += entryLength + 1; // Skip this entry and move to the next
                 paint.DrawHorizontalLine(0, 0, 48, COLORED); // Draw a horizontal line for the current hour
                 paint.DrawHorizontalLine(0, 31, 48, COLORED);
-                epd.Display_Partial_Not_refresh(paint.GetImage(), (hour-1)*32+32, 258-(51*day)-48, (hour-1)*32+32 + 32, 258-(51*day));
+                epd.Display_Partial_Not_refresh(paint.GetImage(), (hour-1)*32+32, 254-(51*day)-48, (hour-1)*32+32 + 32, 254-(51*day));
                 continue; // Skip to the next entry
             }
 
@@ -108,7 +102,7 @@ void paintWriteRows(Paint paint, Epd epd, char* data) {
             }
             paint.DrawHorizontalLine(0, 0, 48, COLORED); // Draw a horizontal line for the current hour
             paint.DrawHorizontalLine(0, 31, 48, COLORED);
-            epd.Display_Partial_Not_refresh(paint.GetImage(), (hour-1)*32+32, 258-(51*day)-48, (hour-1)*32+32+32, 258-(51*day));
+            epd.Display_Partial_Not_refresh(paint.GetImage(), (hour-1)*32+32, 254-(51*day)-48, (hour-1)*32+32+32, 254-(51*day));
 
             // Move to the next part in data
             dayIndices[day] += entryLength + 1; // +1 to skip the '|' separator

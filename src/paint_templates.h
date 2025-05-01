@@ -17,24 +17,24 @@ void paintTimes(Paint paint, Epd epd, char* date, int indWeekday)
 {
     //Grid Times
 
-    paint.SetHeight(40);
+    paint.SetHeight(55);
     paint.SetWidth(8*50);
     paint.Clear(UNCOLORED);
 
     //Day
-    if(indWeekday = 1){paint.DrawStringAt(0, 0, "Montag", &Font8, COLORED);
-    }else if(indWeekday = 2){paint.DrawStringAt(0, 0, "Dienstag", &Font8, COLORED);
-    }else if(indWeekday = 3){paint.DrawStringAt(0, 0, "Mittwoch", &Font8, COLORED);
-    }else if(indWeekday = 4){paint.DrawStringAt(0, 0, "Donnerstag", &Font8, COLORED);
-    }else if(indWeekday = 5){paint.DrawStringAt(0, 0, "Freitag", &Font8, COLORED);
-    }else if(indWeekday = 6){paint.DrawStringAt(0, 0, "Samstag", &Font8, COLORED);
-    }else if(indWeekday = 0){paint.DrawStringAt(0, 0, "Sonntag", &Font8, COLORED);
+    if(indWeekday == 1){paint.DrawStringAt(1, 0, "Montag", &Font8, COLORED);
+    }else if(indWeekday == 2){paint.DrawStringAt(1, 0, "Dienstag", &Font8, COLORED);
+    }else if(indWeekday == 3){paint.DrawStringAt(1, 0, "Mittwoch", &Font8, COLORED);
+    }else if(indWeekday == 4){paint.DrawStringAt(1, 0, "Donnerstag", &Font8, COLORED);
+    }else if(indWeekday == 5){paint.DrawStringAt(1, 0, "Freitag", &Font8, COLORED);
+    }else if(indWeekday == 6){paint.DrawStringAt(1, 0, "Samstag", &Font8, COLORED);
+    }else if(indWeekday == 0){paint.DrawStringAt(1, 0, "Sonntag", &Font8, COLORED);
     }
 
     //Date
-    paint.DrawStringAt(0, 15, date, &Font8, COLORED);
+    paint.DrawStringAt(1, 15, date, &Font8, COLORED);
 
-    paint.DrawHorizontalLine(0, 32, 40, COLORED);
+    paint.DrawHorizontalLine(0, 32, 55, COLORED);
 
     //Hours
     char schoolHourPaint[3] = "1.";
@@ -48,10 +48,10 @@ void paintTimes(Paint paint, Epd epd, char* date, int indWeekday)
             yOffPaint = 5;
         }
         paint.DrawStringAt(yOffPaint, (i-1)*32+42, schoolHourPaint, &Font16, COLORED);
-        paint.DrawHorizontalLine(0, (i-1)*32+64-1, 40, COLORED);
+        paint.DrawHorizontalLine(0, (i-1)*32+64-1, 55, COLORED);
         if(i != 11)
         {
-            paint.DrawHorizontalLine(0, (i-1)*32+64, 40, COLORED);
+            paint.DrawHorizontalLine(0, (i-1)*32+64, 55, COLORED);
         }
     }
 
@@ -82,25 +82,24 @@ void paintVerticalLong(Paint paint, Epd epd, int yPosScreen)
 
 void paintUpperLeftCorner(Paint paint, Epd epd, int indWeekday, char* date)
 {
-    paint.SetHeight(40);
+    paint.SetHeight(55);
     paint.SetWidth(8*4);
     paint.Clear(UNCOLORED);
 
     //Day
-    if(indWeekday = 1){paint.DrawStringAt(2, 0, "Montag", &Font8, COLORED);
-    }else if(indWeekday = 2){paint.DrawStringAt(2, 0, "Dienstag", &Font8, COLORED);
-    }else if(indWeekday = 3){paint.DrawStringAt(2, 0, "Mittwoch", &Font8, COLORED);
-    }else if(indWeekday = 4){paint.DrawStringAt(2, 0, "Donnerstag", &Font8, COLORED);
-    }else if(indWeekday = 5){paint.DrawStringAt(2, 0, "Freitag", &Font8, COLORED);
-    }else if(indWeekday = 6){paint.DrawStringAt(2, 0, "Samstag", &Font8, COLORED);
-    }else if(indWeekday = 0){paint.DrawStringAt(2, 0, "Sonntag", &Font8, COLORED);
+    if(indWeekday == 1){paint.DrawStringAt(2, 0, "Montag", &Font8, COLORED);
+    }else if(indWeekday == 2){paint.DrawStringAt(2, 0, "Dienstag", &Font8, COLORED);
+    }else if(indWeekday == 3){paint.DrawStringAt(2, 0, "Mittwoch", &Font8, COLORED);
+    }else if(indWeekday == 4){paint.DrawStringAt(2, 0, "Donnerstag", &Font8, COLORED);
+    }else if(indWeekday == 5){paint.DrawStringAt(2, 0, "Freitag", &Font8, COLORED);
+    }else if(indWeekday == 6){paint.DrawStringAt(2, 0, "Samstag", &Font8, COLORED);
+    }else if(indWeekday == 0){paint.DrawStringAt(2, 0, "Sonntag", &Font8, COLORED);
     }
 
     //Date
     paint.DrawStringAt(1, 15, date, &Font8, COLORED);
 
-    paint.DrawHorizontalLine(0, 32, 40, COLORED);
-    paint.DrawVerticalLine(39, 0, 40, COLORED); // Draw a vertical line to separate the date and time from Title
+    paint.DrawHorizontalLine(0, 32, 55, COLORED);
     
     // Display the current information on the e-paper display
     epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 300-paint.GetHeight(), 0+paint.GetWidth(), 300);

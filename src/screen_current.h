@@ -10,11 +10,11 @@
 #define Tempdata true
 #define Humiditydata false
 
-bool getCurrentStatus(char* data, int hour, int indexDay);
+bool getCurrentStatus(char* data, float hour, int indexDay);
 void paintTemperature(Paint paint, Epd epd, float temperature);
 void paintSensorDate(Paint paint, Epd epd, float sensorData, bool isTemperature);
 
-void paintCurrentInformation(Paint paint, Epd epd, char* data, char* date, int time, int Weekday, float temperature, float humidity)
+void paintCurrentInformation(Paint paint, Epd epd, char* data, char* date, float time, int Weekday, float temperature, float humidity)
 {
     // Clear the display
     paint.Clear(UNCOLORED);
@@ -22,7 +22,7 @@ void paintCurrentInformation(Paint paint, Epd epd, char* data, char* date, int t
     paintUpperLeftCorner(paint, epd, Weekday, date);
 
     //Title
-    paint.SetHeight(260);
+    paint.SetHeight(240);
     paint.SetWidth(8*5);
     paint.Clear(UNCOLORED);
 
@@ -33,6 +33,8 @@ void paintCurrentInformation(Paint paint, Epd epd, char* data, char* date, int t
         paint.DrawStringAt(50, 5, "Frei", &Font24, COLORED); // Display "Free" if the current hour is free
     }
 
+    paint.DrawVerticalLine(0, 0, 8*5, COLORED); // Draw a vertical line on the left side of the display
+
     epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 0+paint.GetHeight());
 
     paintSensorDate(paint, epd, temperature, Tempdata); // Display the temperature on the e-paper display
@@ -41,7 +43,7 @@ void paintCurrentInformation(Paint paint, Epd epd, char* data, char* date, int t
 
 }
 
-bool getCurrentStatus(char* data, int hour, int indexDay)
+bool getCurrentStatus(char* data, float hour, int indexDay)
 {
     bool occupied = false; // Flag to indicate if the current hour is occupied
     int indexHour = getCurrentHourIndex(data, hour, indexDay); // Get the current hour index from the data string
@@ -60,11 +62,11 @@ bool getCurrentStatus(char* data, int hour, int indexDay)
         entryLength++;
     }
 
-    if(entryLength > 6)
+    if(entryLength > 7)
     {
-        occupied = true; // Limit the length to 6 characters
+        occupied = true;
     }
-    return occupied; // Return the occupied status
+    return occupied;
 }
 
 void paintSensorDate(Paint paint, Epd epd, float sensorData, bool isTemperature)
@@ -77,7 +79,7 @@ void paintSensorDate(Paint paint, Epd epd, float sensorData, bool isTemperature)
 
     if(isTemperature)
     {
-        paint.DrawStringAt(50, 10, "Temperatur", &Font20, COLORED); // Display "Temperature" if the current hour is occupied
+        paint.DrawStringAt(90, 10, "Temperatur", &Font20, COLORED); // Display "Temperature" if the current hour is occupied
         epd.Display_Partial_Not_refresh(paint.GetImage(), 41, 0, 41+paint.GetWidth(), 0+paint.GetHeight());
     } else{
         paint.DrawStringAt(50, 10, "Luftfeuchtigkeit", &Font20, COLORED); // Display "Humidity" if the current hour is free
@@ -90,16 +92,18 @@ void paintSensorDate(Paint paint, Epd epd, float sensorData, bool isTemperature)
     paint.Clear(UNCOLORED);
     if(isTemperature)
     {
-        char tempStr[7];
-        sprintf(tempStr, "%.2f C", sensorData); // Format the string with the temperature value
+        char tempStr[16];
+        dtostrf(sensorData, 6, 2, tempStr); // Convert float to char array with 2 decimal places
+        strcat(tempStr, " C"); // Append " C" to the string
         Serial.println(tempStr); // Print the temperature value to the serial monitor
         paint.DrawStringAt(0, 0, tempStr, &Font24, COLORED);
     
         // Display the current information on the e-paper display
-        epd.Display_Partial_Not_refresh(paint.GetImage(), 71, 220-paint.GetHeight(), 71+paint.GetWidth(), 220);
+        epd.Display_Partial_Not_refresh(paint.GetImage(), 91, 220-paint.GetHeight(), 91+paint.GetWidth(), 220);
     } else{
-        char tempStr[7];
-        sprintf(tempStr, "%.2f %", sensorData); // Format the string with the temperature value
+        char tempStr[16];
+        dtostrf(sensorData, 6, 2, tempStr); // Convert float to char array with 2 decimal places
+        strcat(tempStr, " %"); // Append " %" to the string
         Serial.println(tempStr); // Print the temperature value to the serial monitor
         paint.DrawStringAt(0, 0, tempStr, &Font24, COLORED);
     
