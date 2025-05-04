@@ -21,11 +21,11 @@ void paintHourplanDay(Paint paint, Epd epd, char* data, int indWeekday, char* da
     paint.SetHeight(248);
     paint.Clear(UNCOLORED);
 
-    if(indWeekday == 1){paint.DrawStringAt(50, 0, "Montag", &Font20, COLORED);
-    }else if(indWeekday == 2){paint.DrawStringAt(50, 0, "Dienstag", &Font20, COLORED);
+    if(indWeekday == 2){paint.DrawStringAt(50, 0, "Dienstag", &Font20, COLORED);
     }else if(indWeekday == 3){paint.DrawStringAt(50, 0, "Mittwoch", &Font20, COLORED);
     }else if(indWeekday == 4){paint.DrawStringAt(50, 0, "Donnerstag", &Font20, COLORED);
     }else if(indWeekday == 5){paint.DrawStringAt(50, 0, "Freitag", &Font20, COLORED);
+    }else{paint.DrawStringAt(50, 0, "Montag", &Font20, COLORED);
     }
     epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 0+paint.GetHeight());
     // Serial.println("Title set");

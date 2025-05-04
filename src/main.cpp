@@ -45,7 +45,7 @@ void onTimerInterrupt() {
 #define UNCOLORED   1
 
 #define sdcsPin PA9
-#define ButtonPin PC13
+#define ButtonPin PA8
 
 
 
@@ -59,6 +59,7 @@ uint64_t lastMillisDispChange = 0; // Variable to store the last time the button
 
 
 void setup() {
+    pinMode(LED_BUILTIN, OUTPUT); // Set the LED pin as output
     // put your setup code here, to run once:
     Serial.begin(115200);
     delay(1000); // Wait for the serial connection to establish
@@ -125,17 +126,17 @@ void setup() {
         lastInterruptTime = interruptTime;
     }, FALLING); // Trigger on falling edge (button press)
 
-    pinMode(PD_10, OUTPUT); // Set PD_10 as output for CS pin
-    digitalWrite(PD_10, HIGH); // Set PD_10 to HIGH (inactive state)
-
-    pinMode(PD_8, OUTPUT); // Set PD_8 as output for SD card CS pin
-    digitalWrite(PD_8, LOW); // Set PD_8 to LOW (active state)
 
     delay(500);
 
     if (!initSDCard(3, sdcsPin)) {
       Serial.println("SD card initialization failed. Halting...");
-      while (true); // Halt execution
+      while (true){
+        digitalWrite(LED_BUILTIN, HIGH); // Turn on the LED
+        delay(500); // Wait for 500 milliseconds
+        digitalWrite(LED_BUILTIN, LOW); // Turn off the LED
+        delay(500); // Wait for 500 milliseconds
+      }; // Halt execution
     }
     delay(500);
 

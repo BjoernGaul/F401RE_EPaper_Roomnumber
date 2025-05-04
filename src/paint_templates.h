@@ -22,17 +22,17 @@ void paintTimes(Paint paint, Epd epd, char* date, int indWeekday)
     paint.Clear(UNCOLORED);
 
     //Day
-    if(indWeekday == 1){paint.DrawStringAt(1, 0, "Montag", &Font8, COLORED);
-    }else if(indWeekday == 2){paint.DrawStringAt(1, 0, "Dienstag", &Font8, COLORED);
-    }else if(indWeekday == 3){paint.DrawStringAt(1, 0, "Mittwoch", &Font8, COLORED);
+    if(indWeekday == 1){paint.DrawStringAt(4, 0, "Montag", &Font8, COLORED);
+    }else if(indWeekday == 2){paint.DrawStringAt(4, 0, "Dienstag", &Font8, COLORED);
+    }else if(indWeekday == 3){paint.DrawStringAt(4, 0, "Mittwoch", &Font8, COLORED);
     }else if(indWeekday == 4){paint.DrawStringAt(1, 0, "Donnerstag", &Font8, COLORED);
-    }else if(indWeekday == 5){paint.DrawStringAt(1, 0, "Freitag", &Font8, COLORED);
-    }else if(indWeekday == 6){paint.DrawStringAt(1, 0, "Samstag", &Font8, COLORED);
-    }else if(indWeekday == 0){paint.DrawStringAt(1, 0, "Sonntag", &Font8, COLORED);
+    }else if(indWeekday == 5){paint.DrawStringAt(4, 0, "Freitag", &Font8, COLORED);
+    }else if(indWeekday == 6){paint.DrawStringAt(4, 0, "Samstag", &Font8, COLORED);
+    }else if(indWeekday == 0){paint.DrawStringAt(4, 0, "Sonntag", &Font8, COLORED);
     }
 
     //Date
-    paint.DrawStringAt(1, 15, date, &Font8, COLORED);
+    paint.DrawStringAt(5, 15, date, &Font8, COLORED);
 
     paint.DrawHorizontalLine(0, 32, 55, COLORED);
 
