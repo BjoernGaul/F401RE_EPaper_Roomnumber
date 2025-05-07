@@ -36,11 +36,11 @@ int getCurrentHourIndex(char* data, float time, int indexDay)
 
     // Get school hour from time
     int schoolHour = 0;
-    if (8.0f < time && time < 8.75f) // 8:00 - 8:42
+    if (8.0f < time && time < 8.75f) // 8:00 - 8:45
     {
         schoolHour = 1;
     }
-    else if (8.75f < time && time < 9.5f) // 8:42 - 9:25
+    else if (8.75f < time && time < 9.5f) // 8:45 - 9:25
     {
         schoolHour = 2;
     }

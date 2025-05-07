@@ -34,7 +34,6 @@ Adafruit_BME280 bme; // use I2C interface
 float temperature, humidity; // Variables to store sensor data
 
 #define TIMER_INTERVAL_MICROSEC (5 * 60 * 1000000) // 5 minutes in microseconds
-
 volatile bool fiveMinuteFlag = false; // Flag to indicate the timer event
 
 void onTimerInterrupt() {
@@ -186,7 +185,7 @@ void loop() {
         Serial.println(" %");
     }
 
-    if (ButtonPressed || (millis() - lastMillisDispChange) > (30*1000)) { // Check if the button was pressed or if 10 seconds have passed || (millis() - lastMillisDispChange) > (30*1000)
+    if (ButtonPressed || (millis() - lastMillisDispChange) > (30*1000)) { // Check if the button was pressed or if 30 seconds have passed || (millis() - lastMillisDispChange) > (30*1000)
         if(statePaper >= 3){
             statePaper = 0; // Reset to the first state if it exceeds the number of states
         } else {

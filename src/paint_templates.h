@@ -105,21 +105,3 @@ void paintUpperLeftCorner(Paint paint, Epd epd, int indWeekday, char* date)
     epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 300-paint.GetHeight(), 0+paint.GetWidth(), 300);
 }
 
-void paintLoadingscreen(Paint paint, Epd epd)
-{
-    //Loading screen
-    paint.SetHeight(300);
-    paint.SetWidth(8*8);
-    paint.Clear(UNCOLORED);
-
-    paint.DrawStringAt(5, 5, "Loading...", &Font24, COLORED);
-    epd.Display_Partial_Not_refresh(paint.GetImage(), 0, 0, 0+paint.GetWidth(), 300);
-
-    paint.Clear(UNCOLORED);
-    for(int xpos=64; xpos < 400; xpos+=64)
-    {
-        epd.Display_Partial_Not_refresh(paint.GetImage(), xpos, 0, xpos+paint.GetWidth(), 300);
-    }
-
-
-}
